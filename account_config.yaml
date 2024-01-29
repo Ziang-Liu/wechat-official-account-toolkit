@@ -1,0 +1,9 @@
+# notes: 所有的输入值都是字符串，token 需要加双引号， 其他不需要
+cookie : 
+# eg: appmsglist_action_0000000000=card; skey=null; luin=null; lskey=null; user_id=null; session_id=null; rewardsn=; wxtokenkey=777; ua_id=ejrhawerkjhewriljhwedfjkwerijlqher=; wxuin=000000000000000; poc_sid=asdfkjlhawdfiulhqerfiulhd; cert=awdfoijahwefiulhaefiluhae; _qpsvr_localtk=0.00000000000000; ptui_loginuin=00000000000; RK=dfojgkhf+E; ptcz=dfgjlksdfgoliwjerogisdfiugjhsdflkhjsdfglkjh; uin=o000000000; _clck=1smhrtt|1|fir|0; noticeLoginFlag=1; remember_acct=sdfgjkhsdfgjh@.com; uuid=sdfglioshjergkljhsdfgkjlhsdfg; sig=h0155f6fe72edbd98e8b0abf51ae0383b4b2218b846a927f04fb3b6eb54227e22eba6aa2621ff0090a8; data_bizuin=3947646507; bizuin=3947646507; master_user=gh_4ead257e1c54; master_sid=WlBSWXJEOTFpTzZvVlNuVTVnV0ZuVkgzWXhieDBOWTZBcV9nd05ydUpDYTJIb3NralRrem5FbUc5eTlDRXhzeG4xNUR6MXkxMzNxX2xMT2hvMWVuZ2p3YmRmSnRrUjVXTm9UNElHVGxPTEV2ejdaRGtjb1ZLbmhDYmg4UDZHQnhkaUlCMDdMN1N4QWwwQTBM; master_ticket=d7a834777ceb20bc10f7ad5223b13899; data_ticket=vqlsKet6VZRMFGS7imqhNqnYiNchrypKifXhQ9zBnHt3HKPhFYgC9qaFrGnR3OE6; rand_info=CAESIA3Sq7/TKDeQRN3PPVMTJS3DPGXHjl1+QS7fRBftLGi9; slave_bizuin=3947646507; slave_user=gh_4ead257e1c54; slave_sid=NWE5SlNIWVc0YzlSTEVncURvcEN4S21mQ1Z5UUtTM0gyN0JSR3M1Vnhzd3BiMDlrcXZTcUNtaFo0UTNjeGkxd21qUm9kcFR3NWhxX0hWWTFPM0MzeEg0ekpVSlB6b0dWUUlwUHByRUF6Tedfgsaergergsdfgrthrhtgjterghtyjrgr6eeryh; _clsk=serfgsergf|000000000000|00|0|mp.weixin.qq.com/weheat-agent/payload/record
+user_agent : 
+# eg: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0
+fakeid : 
+# eg: MzU4NTQ0MjE1MA==
+token : 
+# eg: "0000000000"
