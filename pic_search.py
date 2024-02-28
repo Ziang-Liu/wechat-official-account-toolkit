@@ -48,7 +48,7 @@ async def main() -> None:
                     with open("image_details.csv", mode="a", newline='', encoding="utf-8") as file:
                         file.write(data+'\n')
                 except Exception as e:
-                    logger.error(f"{file_path} is skipped bue to network error!,{e}")
+                    logger.error(f"{file_path} is skipped due to network error!,{e}")
                     await asyncio.sleep(10)
                     continue
 
