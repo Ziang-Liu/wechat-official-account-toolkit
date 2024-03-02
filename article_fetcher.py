@@ -1,4 +1,5 @@
 import json, requests, time, random
+from loguru import logger
 
 # note: 微信公众号有较强的反爬措施，如果公众号列表很长的话爬取时间会很长，
 #       而且大概率会被风控，仅作学习参考使用。
@@ -51,15 +52,10 @@ def get_page_list(cookie, user_agent, fakeid, token) -> str:
         
         # 反爬风控
         if resp.json()['base_resp']['ret'] == 200013:
-            print("frequencey control, stop at {}".format(str(begin)))
+            logger.warning("反爬风控触发, stop at {}".format(str(begin)))
             time.sleep(3600)
             continue
-        '''
-        # 如果返回的内容中为空则结束
-        if len(resp.json()['app_msg_list']) == 0:
-            print("all ariticle parsed")
-            break
-        '''
+
         msg = resp.json() # dict
 
         if "publish_page" in msg:
@@ -72,7 +68,7 @@ def get_page_list(cookie, user_agent, fakeid, token) -> str:
                     info = '"{}","{}"'.format(item['title'], item['link']) # dict -> str
                     with open("app_msg_list.csv", "a",encoding='utf-8') as f:
                         f.write(info+'\n')
-                    print(f'写入链接，标题：{item['title']}')
+                    logger.info(f'获取标题: {item['title']}\n链接: {item['link']}')
 
         # 下一个列表
         i += 1    

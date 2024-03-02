@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter.ttk import *
-import threading, ctypes, sys
+import threading, ctypes
 from article_fetcher import get_page_list
 
 def start():
@@ -8,7 +8,6 @@ def start():
     user_agent = entry2.get()
     fakeid = entry3.get()
     token = entry4.get()
-    
     task_thread = threading.Thread(target=get_page_list, args=(cookie,user_agent,fakeid,token))
     task_thread.start()
 
