@@ -17,6 +17,7 @@ class ImageDownloader:
             self,
             total_tasks: int = -1,
             start_from: int = 0,
+            keywords: List[str] = None,
             filter_small_image: bool = False,
             filter_image_list: bool = False,
             filter_gif: bool = False,
@@ -40,6 +41,7 @@ class ImageDownloader:
         self._headers = {'User-Agent': UserAgent().random}
         self._thread = thread
         self._start_from = start_from
+        self._keywords = keywords
         self._filter_photo_size = filter_small_image
         self._filter_photo_list = filter_image_list
         self._need_gif = filter_gif
@@ -75,11 +77,8 @@ class ImageDownloader:
                 async with aiofiles.open(target_path, 'wb') as f:
                     await f.write(await response.aread())
 
-            try:
-                resp = await client.get(url, headers = self._headers)
-                await write_image(resp, image_path) if resp.status_code == 200 else None
-            except Exception:
-                raise Exception(f"Failed to download image {url}")
+            resp = await client.get(url, headers = self._headers)
+            await write_image(resp, image_path) if resp.status_code == 200 else None
 
         async def create_queue():
             async def worker(queue: asyncio.Queue, client: AsyncClient):
@@ -88,7 +87,11 @@ class ImageDownloader:
                     if url is None:
                         break
 
-                    ext_type = parse_qs(urlparse(url).query)['wx_fmt'][0]
+                    try:
+                        ext_type = parse_qs(urlparse(url).query)['wx_fmt'][0]
+                    except KeyError:
+                        ext_type = 'jpeg'
+
                     await image_handler(client, url, f'{img_num}.{ext_type}') \
                         if ext_type != 'gif' and not self._need_gif else None
                     queue.task_done()
@@ -113,6 +116,9 @@ class ImageDownloader:
             if i < self._start_from:
                 continue
 
+            if not re.compile("|".join(map(re.escape, self._keywords))).findall(task["title"]):
+                continue
+
             url_list = await self._get_image_urls(URL(url = task["url"]))
             if len(url_list) <= 5 and self._filter_photo_list:
                 continue
@@ -128,11 +134,11 @@ class ImageDownloader:
 
             try:
                 await self._download_image(url_list)
-                logger.info(f"Task {i}, {_title} finished")
+                logger.info(f"Finish task: {i}, Title: {_title}, Total images: {len(url_list)}")
             except Exception as exc:
-                logger.warning(f"Task {i}, {_title} failed: {exc}")
-                logger.info("Retry in 10 seconds")
+                logger.warning(f"Task {i}, {_title} failed: {exc}, retry in 10 seconds")
                 await asyncio.sleep(10)
+
                 try:
                     await self._download_image(url_list)
                 except Exception as retry_exc:
