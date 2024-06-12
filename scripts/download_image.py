@@ -17,12 +17,11 @@ class ImageDownloader:
             self,
             total_tasks: int = -1,
             start_from: int = 0,
-            keywords: List[str] = None,
+            article_keywords: List[str] = None,
             filter_small_image: bool = False,
             filter_image_list: bool = False,
             filter_gif: bool = False,
             thread: int = 1,
-            base_url: str = "mmbiz.qpic.cn"
     ) -> None:
         """
         Read results.csv and get images from collected urls
@@ -37,15 +36,17 @@ class ImageDownloader:
         if not os.path.exists('result.csv'):
             raise FileNotFoundError("No result.csv found.")
 
-        self._base_url = base_url
+        self._base_url = "mmbiz.qpic.cn"
         self._headers = {'User-Agent': UserAgent().random}
+
         self._thread = thread
         self._start_from = start_from
-        self._keywords = keywords
+        self._article_keywords = article_keywords
         self._filter_photo_size = filter_small_image
         self._filter_photo_list = filter_image_list
-        self._need_gif = filter_gif
-        self._download_limit = total_tasks
+        self._filter_gif = filter_gif
+        self._total_tasks = total_tasks
+
         self._working_dir = os.getcwd()
         os.makedirs("images", exist_ok = True)
 
@@ -93,7 +94,7 @@ class ImageDownloader:
                         ext_type = 'jpeg'
 
                     await image_handler(client, url, f'{img_num}.{ext_type}') \
-                        if ext_type != 'gif' and not self._need_gif else None
+                        if ext_type != 'gif' and not self._filter_gif else None
                     queue.task_done()
 
             fixed_length_rank = asyncio.Queue()
@@ -109,14 +110,13 @@ class ImageDownloader:
         await create_queue()
 
     async def start(self):
-        logger.info("Start downloading images...")
         logger.info("If you encounter error message, record the task number and restart from there")
 
         for i, task in enumerate(self._tasks):
             if i < self._start_from:
                 continue
 
-            if not re.compile("|".join(map(re.escape, self._keywords))).findall(task["title"]):
+            if not re.compile("|".join(map(re.escape, self._article_keywords))).findall(task["title"]):
                 continue
 
             url_list = await self._get_image_urls(URL(url = task["url"]))
@@ -134,10 +134,10 @@ class ImageDownloader:
 
             try:
                 await self._download_image(url_list)
-                logger.info(f"Finish task: {i}, Title: {_title}, Total images: {len(url_list)}")
+                logger.info(f"Task: {i}, Title: {_title}, Total images: {len(url_list)}")
             except Exception as exc:
-                logger.warning(f"Task {i}, {_title} failed: {exc}, retry in 10 seconds")
-                await asyncio.sleep(10)
+                logger.warning(f"Task {i} encounter an error: {exc}, retry in 3 seconds")
+                await asyncio.sleep(3)
 
                 try:
                     await self._download_image(url_list)
@@ -146,8 +146,8 @@ class ImageDownloader:
                     raise
             finally:
                 os.chdir(self._working_dir)
-                self._download_limit -= 1
+                self._total_tasks -= 1
 
-            if self._download_limit == 0:
+            if self._total_tasks == 0:
                 logger.info("Task accomplished")
                 return

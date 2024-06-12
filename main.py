@@ -29,7 +29,7 @@ async def download_images_from_result():
         thread = int(download_thread) if download_thread else 4,
         start_from = int(start_from) if start_from else 0,
         total_tasks = int(total_task) if total_task else -1,
-        keywords = keywords,
+        article_keywords = keywords,
         filter_small_image = True if filter_small_image == "1" else False,
         filter_image_list = True if filter_image_list == "1" else False,
         filter_gif = True if filter_gif == "1" else False
